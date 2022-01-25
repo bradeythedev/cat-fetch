@@ -1,28 +1,16 @@
-## CatFetch Reborn
-Fast fetch program written in bash script!
+# Cowfetch
+Fetch program written in shell, forked from [Cat-fetch-reborn](https://github.com/jhonnyrice/cat-fetch) by [JhonnyRice](https://github.com/jhonnyrice), and using the cow from cowsay.
 
-The ascii cat is made by [me](https://github.com/jhonnyrice).
+## Features
+* All the info of neofetch
+* Good WM detection (but not by me bc I suck lol)
+* moo
 
-### Features
-* Fast. Not as fast as the old cat-fetch, but still really fast
-* Good WM detection. It can still have bugs, but its ultra fast, because it doesn't need to search processes for the WM's in a process list, wich is a very slow method
-* Cute. Cats are cute.
-* Lots of info. There are lots of info that this fetch can display, and we're adding even more! from the current shell to the graphical session to RAM usage.
-The fetch does not work? you encounter some bugs? Create a github issue and we will fix it!*
+## Screenshots
 
+Doesn't work *yet*
 
-*Fixes can take up to a day or more
-
-#### Screenshots
-
-###### Catfetch on fedora
-![Catfetch on fedora](https://user-images.githubusercontent.com/93940240/150697310-db887fa1-530d-4a53-807b-e13fe11d2a27.png)
-
-###### Catfetch on Ubuntu
-![Catfetch on Ubuntu](https://user-images.githubusercontent.com/93940240/150697445-912577ec-b374-4936-9668-f14820b8184a.png)
-
-
-#### Usage
+## Usage
 To use the program you'll need to know these options:
 ```
 -m		Adds more info, like the system architecture and graphic session(X11 or WAYLAND) to the output
@@ -33,47 +21,47 @@ To use the program you'll need to know these options:
 -h		Shows this help message
 ```
 
-#### Install
+## Install
 Clone the repo and use make to automatically install the program:
 ```
-git clone https://github.com/JhonnyRice/cat-fetch-reborn
-cd cat-fetch-reborn
+git clone https://github.com/bradeythedev/cowfetch
+cd cowfetch
 sudo make install
 ```
-If you want to install the posix-compliant version of the script(still an early WIP) run:
-```
-sudo make installposix
-```
-We advice to always check the project's code before running it, we do not take any responsability if something happens.
+If it bricks your install or something, *you have been warned*, therefore not my fault ¯\\_(ツ)_/¯
 
-#### Uninstall
+## Uninstall
 To uninstall the program run:
 ```
 sudo make uninstall
 ```
 
 ## Contributors
-[JhonnyRice](https://github.com/JhonnyRice/) Owner
+[Me](https://github.com/bradeythedev/) Owner of this fork
+
+Guy who made cowsay (I'll find a link eventually)
+
+[JhonnyRice](https://github.com/JhonnyRice/) Owner of Cat-fetch-reborn
 
 [Francicoria](https://github.com/Francicoria/) Wrote half of the code
 
-[SpyLima](https://github.com/SpyLima) created the install.sh
+[SpyLima](https://github.com/SpyLima) Created the install.sh
 
-[Viper](https://github.com/viperML) suggested using a makefile instead of install.sh
+[Viper](https://github.com/viperML) Suggested using a makefile instead of install.sh
 
-[Kazoku](https://github.com/K4zoku) perfectioned the wm detection scipt, adding wayland support and making it way shorter
+[Kazoku](https://github.com/K4zoku) Perfected the wm detection scipt, adding wayland support and making it way shorter
 
-[Alberto Salvia Novella](es20490446e.wordpress.com) created the original Xorg WM detection script
-#### Notes
+[Alberto Salvia Novella](es20490446e.wordpress.com) Created the original Xorg WM detection script
+
+## Notes
 Uses some GNU core utils and xprop to work.
 
 This program is licensed under the GPLv3 license.
 
-If you encounter any issue or want a feature to be added please open an issue on this GitHub page. 
+If you encounter any issue or want a feature to be added please open an issue on this GitHub page (and on https://github.com/JhonnyRice/cat-fetch to contribute to something useful)
 
-### TODO
-fetching
-
+## TODO
+whoops, looked like I forked this at a bad time lol
 - [x] OS
 - [x] WM
 - [x] Shell
