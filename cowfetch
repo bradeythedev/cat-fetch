@@ -37,11 +37,13 @@ ARCH=$(uname -m)
 NODE=$(uname -n)
 KERNEL_NAME=$(uname -s)
 KERNEL_REL=$(uname -r)
+KERNEL="${KERNEL_NAME} ${KERNEL_REL}"
 SHELL_NAME=$(cat /proc/$$/comm) # How does this even work
 UPTIME=$(uptime -p) # ??
 RESOLUTION=$(xrandr | grep "*" | awk '{print $1}') # ???
 USED_SPACE=$(df -h / | awk '{print $3}' | grep "^[0-9]")
 TOTAL_SPACE=$(df -h / | awk '{print $2}' | grep "^[0-9]")
+SPACE="$USED_SPACE/$TOTAL_SPACE"
 GPU=$(glxinfo | grep "Device")
 TERMINAL=$(TERM_PID=$(ps -p $$ -o args,ppid | grep -o "[0-9]" | tr -d "\n"); ps -p ${TERM_PID} -o args | tr -d "\n")
 
@@ -104,14 +106,101 @@ Color()
 	echo -e "                ${B_RED} ${SYMBOL} ${B_YELLOW} ${SYMBOL} ${B_GREEN} ${SYMBOL} ${B_CYAN} ${SYMBOL} ${B_BLUE} ${SYMBOL} ${B_PURPLE} ${SYMBOL} ${B_WHITE} ${SYMBOL} ${GRAY} ${SYMBOL} ${CLS}"
 }
 
+# Get length of longest line
+FindBubbleWidth()
+{
+	BUBBLEWIDTH=0
+
+	OS_LENGTH=${#OS}
+	KN_LENGTH=${#KERNEL}
+	AR_LENGTH=${#ARCH}
+	WM_LENGTH=${#WM}
+	GS_LENGTH=${#XDG_SESSION_TYPE}
+	SH_LENGTH=${#SHELL_NAME}
+	UP_LENGTH=${#UPTIME}
+
+	CPU_LENGTH=${#CPU}
+	CPU_LENGTH=$(($CPU_LENGTH-13))
+	GPU_LENGTH=${#GPU}
+	RAM_LENGTH=${#RAM}
+	RES_LENGTH=${#RESOLUTION}
+	USE_LENGTH=${#SPACE}
+
+	echo $OS_LENGTH
+	echo $KN_LENGTH
+	echo $AR_LENGTH
+	echo $WM_LENGTH
+	echo $GS_LENGTH
+	echo $SH_LENGTH
+	echo $UP_LENGTH
+
+	echo $CPU_LENGTH
+	echo $GPU_LENGTH
+	echo $RAM_LENGTH
+	echo $RES_LENGTH
+	echo $USE_LENGTH
+
+	if (( OS_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$OS_LENGTH
+	fi
+
+	if (( KN_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$KN_LENGTH
+	fi
+
+	if (( AR_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$AR_LENGTH
+	fi
+
+	if (( WM_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$WM_LENGTH
+	fi
+
+	if (( GS_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$GS_LENGTH
+	fi
+
+	if (( SH_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$SH_LENGTH
+	fi
+
+	if (( UP_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$UP_LENGTH
+	fi
+
+	if (( CPU_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$CPU_LENGTH
+	fi
+
+	if (( GPU_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$GPU_LENGTH
+	fi
+
+	if (( RAM_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$RAM_LENGTH
+	fi
+
+	if (( RES_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$RES_LENGTH
+	fi
+
+	if (( USE_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$USE_LENGTH
+	fi
+
+	echo $BUBBLEWIDTH
+}
+
 # Dashed separator
 Separator()
 {
-LENGTH=${#NODE}+${#LOGNAME}+1
+NAMELENGTH=${#LOGNAME}+${#NODE}+1
 printf "${BUBBLECOL} | "
-for (( i=0; i<LENGTH; i++ )); do printf "-"; done
+for (( i=0; i<NAMELENGTH; i++ )); do printf "-"; done
 printf "\e[0m\n" # newline- i think
 }
+
+FindBubbleWidth
 
 # Top of bubble
 echo -e "${BUBBLECOL}   ______________________"
@@ -122,7 +211,7 @@ Separator
 
 # Software info
 echo -e "${BUBBLECOL} | ${WORDCOL}OS:  ${TXTCOL}${OS}"
-echo -e "${BUBBLECOL} | ${WORDCOL}KN:  ${TXTCOL}${KERNEL_NAME} ${KERNEL_REL}"
+echo -e "${BUBBLECOL} | ${WORDCOL}KN:  ${TXTCOL}${KERNEL}"
 echo -e "${BUBBLECOL} | ${WORDCOL}AR:  ${TXTCOL}${ARCH}"
 echo -e "${BUBBLECOL} | ${WORDCOL}WM:  ${TXTCOL}${WM}"
 echo -e "${BUBBLECOL} | ${WORDCOL}GS:  ${TXTCOL}$XDG_SESSION_TYPE"
@@ -136,7 +225,7 @@ echo -e "${BUBBLECOL} | ${WORDCOL}CPU: ${TXTCOL}${CPU:13}"
 echo -e "${BUBBLECOL} | ${WORDCOL}GPU: ${TXTCOL}${GPU:12}"
 echo -e "${BUBBLECOL} | ${WORDCOL}RAM: ${TXTCOL}${RAM}"
 echo -e "${BUBBLECOL} | ${WORDCOL}RES: ${TXTCOL}${RESOLUTION}"
-echo -e "${BUBBLECOL} | ${WORDCOL}USE: ${TXTCOL}${USED_SPACE} out of ${TOTAL_SPACE}"
+echo -e "${BUBBLECOL} | ${WORDCOL}USE: ${TXTCOL}${USED_SPACE}/${TOTAL_SPACE}"
 
 # Bottom of bubble
 echo -e "${BUBBLECOL}  \\______________________/"
