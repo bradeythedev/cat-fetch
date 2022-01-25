@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#COLOR VARIABLES
+# COLOR VARIABLES
 RED="\x1b[31m"
 YELLOW="\x1b[33m"
 GREEN="\x1b[32m"
@@ -19,29 +19,27 @@ B_WHITE="\x1b[97m"
 GRAY="\x1b[90m"
 CLS="\x1b[0m"
 
-# CUSTOMIZZATION ZONE
 # Cool characters for the symbol ◆ ◀ ▧ ▨ ▦ ▥ ▤ ▣ ● ◕ █
 SYMBOL="●"
 SEPARATOR="-"
 # Set colors
 TXTCOL=$YELLOW
 WORDCOL=$GREEN
-CATCOL=$CYAN
+BUBBLECOL=$WHITE
+COWCOL=$CYAN
 
-
-# TESTS ZONE
-#Wm script by Alberto Salvia Novella (es20490446e.wordpress.com)
+# WM script by Alberto Salvia Novella (es20490446e.wordpress.com)
 CPU=$(grep -m 1 'model name' /proc/cpuinfo)
 RAM=$(free -h | grep "^Mem:" | awk '{print $3 "/" $2}')
 OS=$(grep -m1 "NAME=" < /etc/os-release | cut -d '"' -f 2)
-WM=${WAYLAND_DISPLAY:-$(xprop -id "$(xprop -root _NET_SUPPORTING_WM_CHECK | cut -d' ' -f5)" _NET_WM_NAME | cut -d'"' -f2)} # thanks to kazoku
+WM=${WAYLAND_DISPLAY:-$(xprop -id "$(xprop -root _NET_SUPPORTING_WM_CHECK | cut -d' ' -f5)" _NET_WM_NAME | cut -d'"' -f2)} # Thanks to kazoku
 ARCH=$(uname -m)
 NODE=$(uname -n)
 KERNEL_NAME=$(uname -s)
 KERNEL_REL=$(uname -r)
-SHELL_NAME=$(cat /proc/$$/comm) # how does this even work
+SHELL_NAME=$(cat /proc/$$/comm) # How does this even work
 UPTIME=$(uptime -p) # ??
-RESOLUTION=$(xrandr | grep "*" | awk '{print $1}') # ? ? ?
+RESOLUTION=$(xrandr | grep "*" | awk '{print $1}') # ???
 USED_SPACE=$(df -h / | awk '{print $3}' | grep "^[0-9]")
 TOTAL_SPACE=$(df -h / | awk '{print $2}' | grep "^[0-9]")
 GPU=$(glxinfo | grep "Device")
@@ -58,24 +56,12 @@ Help()
 -h      Shows this help message\n
 This program is licensed under the GPLv3 license.\n
 If you encounter any issue or want a feature to be added please open an issue on the GitHub page.
-https://github.com/jhonnyrice/cat-fetch\n
+https://github.com/bradeythedev/cowfetch \n
 "
 }
 
-
-
-
-
 ExtraInfo()
 {
-	echo -e "                ${WORDCOL}arch:     ${TXTCOL}${ARCH}"
-	echo -e "                ${WORDCOL}graphic session: ${TXTCOL}$XDG_SESSION_TYPE"
-	echo -e "                ${WORDCOL}cpu:      ${TXTCOL}${CPU:13}"
-	echo -e "                ${WORDCOL}gpu:      ${TXTCOL}${GPU:12}"
-	echo -e "                ${WORDCOL}ram:      ${TXTCOL}${RAM}"
-	echo -e "                ${WORDCOL}resolution:      ${TXTCOL}${RESOLUTION}"
-	echo -e "                ${WORDCOL}space:    ${TXTCOL}${USED_SPACE} used, out of ${TOTAL_SPACE}"
-	echo -e "                ${WORDCOL}terminal: ${TXTCOL}${TERMINAL:7}"
 FEDORA="Fedora Linux"
 case ${OS,,} in
     arch)
@@ -118,25 +104,53 @@ Color()
 	echo -e "                ${B_RED} ${SYMBOL} ${B_YELLOW} ${SYMBOL} ${B_GREEN} ${SYMBOL} ${B_CYAN} ${SYMBOL} ${B_BLUE} ${SYMBOL} ${B_PURPLE} ${SYMBOL} ${B_WHITE} ${SYMBOL} ${GRAY} ${SYMBOL} ${CLS}"
 }
 
+# Dashed separator
 Separator()
 {
-printf "                ${CLS}"
-for (( i=0; i<24; i++ )); do printf "-"; done
-printf "\e[0m\n"
+LENGTH=${#NODE}+${#LOGNAME}+1
+printf "${BUBBLECOL} | "
+for (( i=0; i<LENGTH; i++ )); do printf "-"; done
+printf "\e[0m\n" # newline- i think
 }
 
-echo -e "${CATCOL}                $NODE@$LOGNAME                ${CLS}"
-LENGTH=${#NODE}+${#LOGNAME}+1
-printf "                ${CLS}"
-for (( i=0; i<LENGTH; i++ )); do printf "-"; done
+# Top of bubble
+echo -e "${BUBBLECOL}   ______________________"
+echo -e "${BUBBLECOL}  /                      \\"
+echo -e "${BUBBLECOL} | ${COWCOL}$LOGNAME@$NODE"
 
+Separator
+
+# Software info
+echo -e "${BUBBLECOL} | ${WORDCOL}OS:  ${TXTCOL}${OS}"
+echo -e "${BUBBLECOL} | ${WORDCOL}KN:  ${TXTCOL}${KERNEL_NAME} ${KERNEL_REL}"
+echo -e "${BUBBLECOL} | ${WORDCOL}AR:  ${TXTCOL}${ARCH}"
+echo -e "${BUBBLECOL} | ${WORDCOL}WM:  ${TXTCOL}${WM}"
+echo -e "${BUBBLECOL} | ${WORDCOL}GS:  ${TXTCOL}$XDG_SESSION_TYPE"
+echo -e "${BUBBLECOL} | ${WORDCOL}SH:  ${TXTCOL}${SHELL_NAME}"
+echo -e "${BUBBLECOL} | ${WORDCOL}UP:  ${TXTCOL}${UPTIME:3}"
+
+Separator
+
+# Hardware info
+echo -e "${BUBBLECOL} | ${WORDCOL}CPU: ${TXTCOL}${CPU:13}"
+echo -e "${BUBBLECOL} | ${WORDCOL}GPU: ${TXTCOL}${GPU:12}"
+echo -e "${BUBBLECOL} | ${WORDCOL}RAM: ${TXTCOL}${RAM}"
+echo -e "${BUBBLECOL} | ${WORDCOL}RES: ${TXTCOL}${RESOLUTION}"
+echo -e "${BUBBLECOL} | ${WORDCOL}USE: ${TXTCOL}${USED_SPACE} out of ${TOTAL_SPACE}"
+
+# Bottom of bubble
+echo -e "${BUBBLECOL}  \\______________________/"
+
+# moo
+echo -e "${BUBBLECOL}       \\"
+echo -e "${BUBBLECOL}        \\ ${COWCOL}  ^__^"
+echo -e "${BUBBLECOL}         \\ ${COWCOL} (oo)\\_______"
+echo -e "${COWCOL}            (__)\\       )\\/\\"
+echo -e "${COWCOL}                ||----w |"
+echo -e "${COWCOL}                ||     ||"
+
+# End
 printf "\e[0m\n"
-echo -e "${CATCOL}   /'._         ${WORDCOL}os:      ${TXTCOL}${OS}"
-echo -e "${CATCOL}  (° o 7        ${WORDCOL}wm:      ${TXTCOL}${WM}"
-echo -e "${CATCOL}   |'-'\"~.  .   ${WORDCOL}shell:   ${TXTCOL}${SHELL_NAME}"
-echo -e "${CATCOL}   Uu^~C_J._.\"  ${WORDCOL}uptime:  ${TXTCOL}${UPTIME:3}"
-echo -e "${CATCOL}                ${WORDCOL}kernel:  ${TXTCOL}${KERNEL_NAME} ${KERNEL_REL}"
-printf "\e[0m"
 
 while getopts ":hmabdc" option; do
    case $option in
@@ -149,7 +163,6 @@ while getopts ":hmabdc" option; do
 	 printf "${CLS}";;
       a) # 	Get all of the info
          ExtraInfo
-	 Separator
 	 DarkColor
 	 BrightColor
 	 printf "${CLS}";;
@@ -168,7 +181,7 @@ while getopts ":hmabdc" option; do
 	 printf "${CLS}";;
       ?) #     Get unknown command output
 	 printf "${CLS}\n"
-         echo "This option does not exist. For the full list of options please use the command 'catfetch -h'"
+         echo "This option does not exist. For the full list of options please use the command 'cowfetch -h'"
          exit;;
    esac
 done
