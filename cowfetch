@@ -35,6 +35,7 @@ OS=$(grep -m1 "NAME=" < /etc/os-release | cut -d '"' -f 2)
 WM=${WAYLAND_DISPLAY:-$(xprop -id "$(xprop -root _NET_SUPPORTING_WM_CHECK | cut -d' ' -f5)" _NET_WM_NAME | cut -d'"' -f2)} # Thanks to kazoku
 ARCH=$(uname -m)
 NODE=$(uname -n)
+NAME=${LOGNAME}@${NODE}
 KERNEL_NAME=$(uname -s)
 KERNEL_REL=$(uname -r)
 KERNEL="${KERNEL_NAME} ${KERNEL_REL}"
@@ -112,6 +113,7 @@ FindBubbleWidth()
 	BUBBLEWIDTH=0
 
 	# Find the lengths of all the lines - this excludes the bubble and the prefix (eg. [WM:  ], [CPU: ]), because this isn't required to find the longest line or print the right side of the bubble
+	NAME_LENGTH=${#NAME}
 	OS_LENGTH=${#OS}
 	KN_LENGTH=${#KERNEL}
 	AR_LENGTH=${#ARCH}
@@ -129,6 +131,7 @@ FindBubbleWidth()
 	USE_LENGTH=${#SPACE}
 
 	# Print the line lengths for debugging
+	echo $NAME_LENGTH
 	echo $OS_LENGTH
 	echo $KN_LENGTH
 	echo $AR_LENGTH
@@ -145,6 +148,10 @@ FindBubbleWidth()
 
 	# Compare the line lengths - if the current longest line is shorter than the next, the longest is set to that, so by the end the longest line has been found
 	# It is not recorded as what line is the longest, but as that line's length.
+	if (( NAME_LENGTH > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=$NAME_LENGTH
+	fi
+	
 	if (( OS_LENGTH > BUBBLEWIDTH ))
 	then BUBBLEWIDTH=$OS_LENGTH
 	fi
@@ -200,41 +207,103 @@ FindBubbleWidth()
 # Dashed separator
 Separator()
 {
-NAMELENGTH=${#LOGNAME}+${#NODE}+1
-printf "${BUBBLECOL} | "
-for (( i=0; i<NAMELENGTH; i++ )); do printf "-"; done
-printf "\e[0m\n" # newline- i think
+	RIGHT_LENGTH=$((BUBBLEWIDTH-NAME_LENGTH))
+	printf "${BUBBLECOL} | "
+	for (( i=0; i<NAME_LENGTH; i++ )); do printf "-"; done
+	SpaceUntilRightSide
+	#printf "\e[0m\n" # newline- i think
+}
+
+Underscores()
+{
+	for (( i=0; i<BUBBLEWIDTH; i++ )); do printf "_"; done
+}
+
+SpacesUnderUnderscores()
+{
+	for (( i=0; i<BUBBLEWIDTH; i++ )); do printf " "; done
+}
+
+SpaceUntilRightSide()
+{
+	for (( i=0; i<RIGHT_LENGTH; i++ )); do printf " "; done
+	printf "${BUBBLECOL} |"
+	echo -e ""
 }
 
 FindBubbleWidth
 
-# Top of bubble
-echo -e "${BUBBLECOL}   ______________________"
-echo -e "${BUBBLECOL}  /                      \\"
-echo -e "${BUBBLECOL} | ${COWCOL}$LOGNAME@$NODE"
+BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
 
+# Top of bubble
+printf "${BUBBLECOL}   "
+Underscores
+echo -e ""
+printf "${BUBBLECOL}  /"
+SpacesUnderUnderscores
+echo -e "\\"
+printf "${BUBBLECOL} | ${COWCOL}$LOGNAME@$NODE"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-NAME_LENGTH ))
+SpaceUntilRightSide
+
+# First separator
 Separator
+
+BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
 
 # Software info
-echo -e "${BUBBLECOL} | ${WORDCOL}OS:  ${TXTCOL}${OS}"
-echo -e "${BUBBLECOL} | ${WORDCOL}KN:  ${TXTCOL}${KERNEL}"
-echo -e "${BUBBLECOL} | ${WORDCOL}AR:  ${TXTCOL}${ARCH}"
-echo -e "${BUBBLECOL} | ${WORDCOL}WM:  ${TXTCOL}${WM}"
-echo -e "${BUBBLECOL} | ${WORDCOL}GS:  ${TXTCOL}$XDG_SESSION_TYPE"
-echo -e "${BUBBLECOL} | ${WORDCOL}SH:  ${TXTCOL}${SHELL_NAME}"
-echo -e "${BUBBLECOL} | ${WORDCOL}UP:  ${TXTCOL}${UPTIME:3}"
+printf "${BUBBLECOL} | ${WORDCOL}OS:  ${TXTCOL}${OS}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-OS_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}KN:  ${TXTCOL}${KERNEL}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-KN_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}AR:  ${TXTCOL}${ARCH}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-AR_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}WM:  ${TXTCOL}${WM}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-WM_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}GS:  ${TXTCOL}$XDG_SESSION_TYPE"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-GS_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}SH:  ${TXTCOL}${SHELL_NAME}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-SH_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}UP:  ${TXTCOL}${UPTIME:3}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-UP_LENGTH ))
+SpaceUntilRightSide
 
+BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
+
+# Second separator
 Separator
 
+BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
+
 # Hardware info
-echo -e "${BUBBLECOL} | ${WORDCOL}CPU: ${TXTCOL}${CPU:13}"
-echo -e "${BUBBLECOL} | ${WORDCOL}GPU: ${TXTCOL}${GPU:12}"
-echo -e "${BUBBLECOL} | ${WORDCOL}RAM: ${TXTCOL}${RAM}"
-echo -e "${BUBBLECOL} | ${WORDCOL}RES: ${TXTCOL}${RESOLUTION}"
-echo -e "${BUBBLECOL} | ${WORDCOL}USE: ${TXTCOL}${USED_SPACE}/${TOTAL_SPACE}"
+printf "${BUBBLECOL} | ${WORDCOL}CPU: ${TXTCOL}${CPU:13}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-CPU_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}GPU: ${TXTCOL}${GPU:12}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-GPU_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}RAM: ${TXTCOL}${RAM}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-RAM_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}RES: ${TXTCOL}${RESOLUTION}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-RES_LENGTH ))
+SpaceUntilRightSide
+printf "${BUBBLECOL} | ${WORDCOL}USE: ${TXTCOL}${USED_SPACE}/${TOTAL_SPACE}"
+RIGHT_LENGTH=$(( BUBBLEWIDTH-USE_LENGTH ))
+SpaceUntilRightSide
+
+BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
 
 # Bottom of bubble
-echo -e "${BUBBLECOL}  \\______________________/"
+printf "${BUBBLECOL}  \\"
+Underscores
+echo -e "/"
 
 # moo
 echo -e "${BUBBLECOL}       \\"
