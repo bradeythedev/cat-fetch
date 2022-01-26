@@ -16,8 +16,8 @@ Flags and options (more to come, but only these for now)
 -h  Show the help, license and about menus
 -s  Don't print software info
 -i  Don't print hardware info
--c	Show the available colours
--d	Debugging mode
+-c  Show the available colours
+-d  Debugging mode
 ```
 
 ## Install
