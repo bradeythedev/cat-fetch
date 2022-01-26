@@ -22,11 +22,14 @@ CLS="\x1b[0m"
 # Cool characters for the symbol ◆ ◀ ▧ ▨ ▦ ▥ ▤ ▣ ● ◕ █
 SYMBOL="●"
 SEPARATOR="-"
+
 # Set colors
-TXTCOL=$YELLOW
-WORDCOL=$GREEN
+TXTCOL=$B_CYAN
+WORDCOL=$B_BLUE #$B_GREEN
+NAMECOL=$B_GREEN #$B_BLUE
 BUBBLECOL=$WHITE
-COWCOL=$CYAN
+SEPCOL=$WHITE
+COWCOL=$WHITE
 
 # WM script by Alberto Salvia Novella (es20490446e.wordpress.com)
 CPU=$(grep -m 1 'model name' /proc/cpuinfo)
@@ -184,6 +187,7 @@ Separator()
 {
 	RIGHT_LENGTH=$((BUBBLEWIDTH-NAME_LENGTH))
 	printf "${BUBBLECOL} | "
+	printf "${SEPCOL}"
 	for (( i=0; i<NAME_LENGTH; i++ )); do printf "-"; done
 	SpaceUntilRightSide
 	#printf "\e[0m\n" # newline- i think
@@ -191,11 +195,13 @@ Separator()
 
 Underscores()
 {
+	printf "${BUBBLECOL}"
 	for (( i=0; i<BUBBLEWIDTH; i++ )); do printf "_"; done
 }
 
 SpacesUnderUnderscores()
 {
+	printf "${BUBBLECOL}"
 	for (( i=0; i<BUBBLEWIDTH; i++ )); do printf " "; done
 }
 
@@ -216,7 +222,7 @@ TopOfBubble()
 	printf "${BUBBLECOL}  /"
 	SpacesUnderUnderscores
 	echo -e "\\"
-	printf "${BUBBLECOL} | ${COWCOL}$LOGNAME@$NODE"
+	printf "${BUBBLECOL} | ${NAMECOL}$LOGNAME@$NODE"
 	RIGHT_LENGTH=$(( BUBBLEWIDTH-NAME_LENGTH ))
 	SpaceUntilRightSide
 	BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
@@ -303,7 +309,7 @@ moo()
 # End
 End()
 {
-	printf "\n"
+	printf "${CLS}\n"
 }
 
 ### MAIN SEQUENCE ###
