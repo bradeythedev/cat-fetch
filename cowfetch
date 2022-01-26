@@ -111,6 +111,7 @@ FindBubbleWidth()
 {
 	BUBBLEWIDTH=0
 
+	# Find the lengths of all the lines - this excludes the bubble and the prefix (eg. [WM:  ], [CPU: ]), because this isn't required to find the longest line or print the right side of the bubble
 	OS_LENGTH=${#OS}
 	KN_LENGTH=${#KERNEL}
 	AR_LENGTH=${#ARCH}
@@ -126,6 +127,7 @@ FindBubbleWidth()
 	RES_LENGTH=${#RESOLUTION}
 	USE_LENGTH=${#SPACE}
 
+	# Print the line lengths for debugging
 	echo $OS_LENGTH
 	echo $KN_LENGTH
 	echo $AR_LENGTH
@@ -140,6 +142,8 @@ FindBubbleWidth()
 	echo $RES_LENGTH
 	echo $USE_LENGTH
 
+	# Compare the line lengths - if the current longest line is shorter than the next, the longest is set to that, so by the end the longest line has been found
+	# It is not recorded as what line is the longest, but as that line's length.
 	if (( OS_LENGTH > BUBBLEWIDTH ))
 	then BUBBLEWIDTH=$OS_LENGTH
 	fi
@@ -188,6 +192,7 @@ FindBubbleWidth()
 	then BUBBLEWIDTH=$USE_LENGTH
 	fi
 
+	# Print the longest line's length, for debugging
 	echo $BUBBLEWIDTH
 }
 
