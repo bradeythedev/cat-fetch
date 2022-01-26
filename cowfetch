@@ -48,63 +48,57 @@ SPACE="$USED_SPACE/$TOTAL_SPACE"
 GPU=$(glxinfo | grep "Device")
 TERMINAL=$(TERM_PID=$(ps -p $$ -o args,ppid | grep -o "[0-9]" | tr -d "\n"); ps -p ${TERM_PID} -o args | tr -d "\n")
 
+DO_SOFTWARE=1
+DO_HARDWARE=1
+DO_DEBUG=0
+
 Help()
 {
-        printf "
--m      Adds more info, like the system architecture and graphic session(X11 or WAYLAND) to the output
--d      Adds your dark color palette to the output
--b      Adds your bright color palette to the output
--c	Adds both your dark and bright color palette to the output
--a	Adds all of the options above
--h      Shows this help message\n
-This program is licensed under the GPLv3 license.\n
-If you encounter any issue or want a feature to be added please open an issue on the GitHub page.
-https://github.com/bradeythedev/cowfetch \n
-"
+    echo -e "${CLS}-- bradeythedev's --"
+	echo -e "----- COWFETCH -----"
+	echo -e ""
+	echo -e "-----   Help   -----"
+	echo -e "-h	Show the help, license and about menus"
+	echo -e "-s	Don't print software info"
+	echo -e "-i	Don't print hardware info"
+	echo -e "-c	Show the available colours"
+	echo -e "-d	Debugging mode"
+	echo -e ""
+	echo -e "----- Licenses -----"
+	echo -e "This program is licensed under the GPLv3 license."
+	echo -e "If you encounter any issue or want a feature to be added please open an issue on the GitHub page."
+	echo -e "https://github.com/bradeythedev/cowfetch"
+	echo -e ""
 }
 
-ExtraInfo()
+Palette()
 {
-FEDORA="Fedora Linux"
-case ${OS,,} in
-    arch)
-	ARCH_PKG=$(pacman -Qq --color never > packnum.txt && wc -l packnum.txt)
-	echo -e "                ${WORDCOL}Packages: ${TXTCOL}${ARCH_PKG} (pacman)"
-    ;;
-    debian)
-	DEB_PKG=$(dpkg-query -f '${binary:Package}\n' -W | wc -l)
-	echo -e "                ${WORDCOL}Packages: ${TXTCOL}${DEB_PKG} (dpkg)"
-    ;;
-    ubuntu)
-	DEB_PKG=$(dpkg-query -f '${binary:Package}\n' -W | wc -l)
-	echo -e "                ${WORDCOL}Packages: ${TXTCOL}${DEB_PKG} (dpkg)"
-    ;;
-    void)
-    	XBPS_PKG=$(xbps-query -l | wc -l)
-	echo -e "                ${WORDCOL}Packages: ${TXTCOL}${XBPS_PKG} (xbps)"
-    ;;
-    "fedora linux")
-    	RPM_PKG=$(rpm -qa | wc -l)
-	echo -e "                ${WORDCOL}Packages: ${TXTCOL}${RPM_PKG} (rpm)"
-    ;;
-esac
-
+    echo -e "${CLS}--- Colour Palette ---"
+	echo -e "${RED} ${SYMBOL} ${YELLOW} ${SYMBOL} ${GREEN} ${SYMBOL} ${CYAN} ${SYMBOL} ${BLUE} ${SYMBOL} ${PURPLE} ${SYMBOL} ${WHITE} ${SYMBOL} ${BLACK} ${SYMBOL} ${CLS}"
+	echo -e "${B_RED} ${SYMBOL} ${B_YELLOW} ${SYMBOL} ${B_GREEN} ${SYMBOL} ${B_CYAN} ${SYMBOL} ${B_BLUE} ${SYMBOL} ${B_PURPLE} ${SYMBOL} ${B_WHITE} ${SYMBOL} ${GRAY} ${SYMBOL} ${CLS}"
+	echo -e ""
 }
 
-DarkColor()
+Debug()
 {
-	echo -e "                ${RED} ${SYMBOL} ${YELLOW} ${SYMBOL} ${GREEN} ${SYMBOL} ${CYAN} ${SYMBOL} ${BLUE} ${SYMBOL} ${PURPLE} ${SYMBOL} ${WHITE} ${SYMBOL} ${BLACK} ${SYMBOL} ${CLS}"
-}
+	# Print the line lengths for debugging
+	echo $NAME_LENGTH
+	echo $OS_LENGTH
+	echo $KN_LENGTH
+	echo $AR_LENGTH
+	echo $WM_LENGTH
+	echo $GS_LENGTH
+	echo $SH_LENGTH
+	echo $UP_LENGTH
 
-BrightColor()
-{
-	echo -e "                ${B_RED} ${SYMBOL} ${B_YELLOW} ${SYMBOL} ${B_GREEN} ${SYMBOL} ${B_CYAN} ${SYMBOL} ${B_BLUE} ${SYMBOL} ${B_PURPLE} ${SYMBOL} ${B_WHITE} ${SYMBOL} ${GRAY} ${SYMBOL} ${CLS}"
-}
+	echo $CPU_LENGTH
+	echo $GPU_LENGTH
+	echo $RAM_LENGTH
+	echo $RES_LENGTH
+	echo $USE_LENGTH
 
-Color()
-{
-        echo -e "                ${RED} ${SYMBOL} ${YELLOW} ${SYMBOL} ${GREEN} ${SYMBOL} ${CYAN} ${SYMBOL} ${BLUE} ${SYMBOL} ${PURPLE} ${SYMBOL} ${WHITE} ${SYMBOL} ${BLACK} ${SYMBOL} ${CLS}"
-	echo -e "                ${B_RED} ${SYMBOL} ${B_YELLOW} ${SYMBOL} ${B_GREEN} ${SYMBOL} ${B_CYAN} ${SYMBOL} ${B_BLUE} ${SYMBOL} ${B_PURPLE} ${SYMBOL} ${B_WHITE} ${SYMBOL} ${GRAY} ${SYMBOL} ${CLS}"
+	# Print the longest line's length, for debugging
+	echo $BUBBLEWIDTH
 }
 
 # Get length of longest line
@@ -129,22 +123,6 @@ FindBubbleWidth()
 	RAM_LENGTH=${#RAM}
 	RES_LENGTH=${#RESOLUTION}
 	USE_LENGTH=${#SPACE}
-
-	# Print the line lengths for debugging
-	echo $NAME_LENGTH
-	echo $OS_LENGTH
-	echo $KN_LENGTH
-	echo $AR_LENGTH
-	echo $WM_LENGTH
-	echo $GS_LENGTH
-	echo $SH_LENGTH
-	echo $UP_LENGTH
-
-	echo $CPU_LENGTH
-	echo $GPU_LENGTH
-	echo $RAM_LENGTH
-	echo $RES_LENGTH
-	echo $USE_LENGTH
 
 	# Compare the line lengths - if the current longest line is shorter than the next, the longest is set to that, so by the end the longest line has been found
 	# It is not recorded as what line is the longest, but as that line's length.
@@ -199,9 +177,6 @@ FindBubbleWidth()
 	if (( USE_LENGTH > BUBBLEWIDTH ))
 	then BUBBLEWIDTH=$USE_LENGTH
 	fi
-
-	# Print the longest line's length, for debugging
-	echo $BUBBLEWIDTH
 }
 
 # Dashed separator
@@ -231,127 +206,161 @@ SpaceUntilRightSide()
 	echo -e ""
 }
 
-FindBubbleWidth
-
-BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
-
 # Top of bubble
-printf "${BUBBLECOL}   "
-Underscores
-echo -e ""
-printf "${BUBBLECOL}  /"
-SpacesUnderUnderscores
-echo -e "\\"
-printf "${BUBBLECOL} | ${COWCOL}$LOGNAME@$NODE"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-NAME_LENGTH ))
-SpaceUntilRightSide
-
-# First separator
-Separator
-
-BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
+TopOfBubble()
+{
+	BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
+	printf "${BUBBLECOL}   "
+	Underscores
+	echo -e ""
+	printf "${BUBBLECOL}  /"
+	SpacesUnderUnderscores
+	echo -e "\\"
+	printf "${BUBBLECOL} | ${COWCOL}$LOGNAME@$NODE"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-NAME_LENGTH ))
+	SpaceUntilRightSide
+	BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
+}
 
 # Software info
-printf "${BUBBLECOL} | ${WORDCOL}OS:  ${TXTCOL}${OS}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-OS_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}KN:  ${TXTCOL}${KERNEL}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-KN_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}AR:  ${TXTCOL}${ARCH}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-AR_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}WM:  ${TXTCOL}${WM}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-WM_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}GS:  ${TXTCOL}$XDG_SESSION_TYPE"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-GS_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}SH:  ${TXTCOL}${SHELL_NAME}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-SH_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}UP:  ${TXTCOL}${UPTIME:3}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-UP_LENGTH ))
-SpaceUntilRightSide
+Software()
+{
+	# First separator
+	BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
+	Separator
 
-BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
-
-# Second separator
-Separator
-
-BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
+	# Software info
+	BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
+	printf "${BUBBLECOL} | ${WORDCOL}OS:  ${TXTCOL}${OS}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-OS_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}KN:  ${TXTCOL}${KERNEL}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-KN_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}AR:  ${TXTCOL}${ARCH}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-AR_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}WM:  ${TXTCOL}${WM}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-WM_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}GS:  ${TXTCOL}$XDG_SESSION_TYPE"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-GS_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}SH:  ${TXTCOL}${SHELL_NAME}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-SH_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}UP:  ${TXTCOL}${UPTIME:3}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-UP_LENGTH ))
+	SpaceUntilRightSide
+}
 
 # Hardware info
-printf "${BUBBLECOL} | ${WORDCOL}CPU: ${TXTCOL}${CPU:13}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-CPU_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}GPU: ${TXTCOL}${GPU:12}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-GPU_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}RAM: ${TXTCOL}${RAM}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-RAM_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}RES: ${TXTCOL}${RESOLUTION}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-RES_LENGTH ))
-SpaceUntilRightSide
-printf "${BUBBLECOL} | ${WORDCOL}USE: ${TXTCOL}${USED_SPACE}/${TOTAL_SPACE}"
-RIGHT_LENGTH=$(( BUBBLEWIDTH-USE_LENGTH ))
-SpaceUntilRightSide
+Hardware()
+{
+	# Second separator
+	BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
+	Separator
 
-BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
+	# Hardware info
+	BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
+	printf "${BUBBLECOL} | ${WORDCOL}CPU: ${TXTCOL}${CPU:13}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-CPU_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}GPU: ${TXTCOL}${GPU:12}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-GPU_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}RAM: ${TXTCOL}${RAM}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-RAM_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}RES: ${TXTCOL}${RESOLUTION}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-RES_LENGTH ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${WORDCOL}USE: ${TXTCOL}${USED_SPACE}/${TOTAL_SPACE}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-USE_LENGTH ))
+	SpaceUntilRightSide
+}
 
 # Bottom of bubble
-printf "${BUBBLECOL}  \\"
-Underscores
-echo -e "/"
+BottomOfBubble()
+{
+	BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
+	printf "${BUBBLECOL}  \\"
+	Underscores
+	echo -e "/"
+}
 
 # moo
-echo -e "${BUBBLECOL}       \\"
-echo -e "${BUBBLECOL}        \\ ${COWCOL}  ^__^"
-echo -e "${BUBBLECOL}         \\ ${COWCOL} (oo)\\_______"
-echo -e "${COWCOL}            (__)\\       )\\/\\"
-echo -e "${COWCOL}                ||----w |"
-echo -e "${COWCOL}                ||     ||"
+moo()
+{
+	echo -e "${BUBBLECOL}       \\"
+	echo -e "${BUBBLECOL}        \\ ${COWCOL}  ^__^"
+	echo -e "${BUBBLECOL}         \\ ${COWCOL} (oo)\\_______"
+	echo -e "${COWCOL}            (__)\\       )\\/\\"
+	echo -e "${COWCOL}                ||----w |"
+	echo -e "${COWCOL}                ||     ||"
+}
 
 # End
-printf "\e[0m\n"
+End()
+{
+	printf "\n"
+}
 
-while getopts ":hmabdc" option; do
-   case $option in
-      h) #	Get help message
-	 printf "${CLS}"
-	 Help
-	 exit;;
-      m) #	Get more info
-	 ExtraInfo
-	 printf "${CLS}";;
-      a) # 	Get all of the info
-         ExtraInfo
-	 DarkColor
-	 BrightColor
-	 printf "${CLS}";;
-      b) #      Display bright color palette
-         Separator
-         BrightColor
-	 printf "${CLS}";;
-      d) #	Display dark color palette
-         Separator
-	 DarkColor
-	 printf "${CLS}";;
-      c) #	Display both bright and dark color palette
-      	 Separator
-	 DarkColor
-	 BrightColor
-	 printf "${CLS}";;
-      ?) #     Get unknown command output
-	 printf "${CLS}\n"
-         echo "This option does not exist. For the full list of options please use the command 'cowfetch -h'"
-         exit;;
-   esac
+### MAIN SEQUENCE ###
+
+# Flags
+while getopts ":hsicd" option; do
+	case $option in
+    	h) # Get help message
+			printf "${CLS}"
+			Help;;
+    	s) # Don't print software info
+	 		DO_SOFTWARE=0
+			printf "${CLS}";;
+    	i) # Don't print hardware info
+        	DO_HARDWARE=0
+			printf "${CLS}";;
+    	c) # Print colour palette
+        	Palette
+			printf "${CLS}";;
+		d) # Debugging
+			DO_DEBUG=1;;
+    	?) # Unknown command
+			printf "${CLS}\n"
+        	echo "This option does not exist. For a full list of commands type 'cowfetch -h'";;
+	esac
 done
 
+# Get bubble width and print debug text if applicable
+FindBubbleWidth
+if (( DO_DEBUG == 1 ))
+then Debug
+fi
 
-# /'._   ._
-#(- = 7___.~'
-# |--''   )
-# LL_)'CC_J
+# Top of bubble
+TopOfBubble
+
+# Print software info if applicable
+if (( DO_SOFTWARE == 1 ))
+then Software
+fi
+
+# Print hardware if applicable
+if (( DO_HARDWARE == 1 ))
+then Hardware
+fi
+
+# Bottom of bubble
+BottomOfBubble
+
+# moo
+moo
+
+# End
+End
+
+# ^__^
+# (oo)\_______
+# (__)\       )\/\
+#     ||----w |
+#     ||     ||
