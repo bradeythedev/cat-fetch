@@ -8,7 +8,7 @@ Fetch program written in shell, forked from [Cat-fetch-reborn](https://github.co
 
 ## Screenshots
 
-Gimme a sec
+![Cowfetch on Linux Mint](https://github.com/bradeythedev/cowfetch/CowfetchDemo1.png)
 
 ## Usage
 Flags and options (more to come, but only these for now)
@@ -21,7 +21,7 @@ Flags and options (more to come, but only these for now)
 ```
 
 ## Install
-Clone the repo and use make to automatically install the program (makefile doesn't work *yet*)
+To install cowfetch, open a terminal and type the following (make sure you have the ability to use sudo)
 ```
 git clone https://github.com/bradeythedev/cowfetch
 cd cowfetch
@@ -29,7 +29,7 @@ sudo make install
 ```
 
 ## Uninstall
-To uninstall the program run (makefile doesn't work *yet*)
+To uninstall the program open a terminal and type the following
 ```
 sudo make uninstall
 ```
