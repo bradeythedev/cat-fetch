@@ -56,7 +56,7 @@ DO_BUBBLE=1
 DO_SOFTWARE=1
 DO_HARDWARE=1
 DO_COLOURS=1
-DO_PALLETTE=0
+DO_PALETTE=0
 DO_DEBUG=0
 
 Help()
@@ -78,6 +78,7 @@ Help()
 	echo -e "-s	Don't print software info"
 	echo -e "-i	Don't print hardware info"
 	echo -e "-c	Don't print the available colours"
+	echo -e "-p Show the current colour palette"
 	echo -e "-d	Debugging mode"
 	echo -e ""
 	echo -e "----- Licenses -----"
@@ -85,6 +86,14 @@ Help()
 	echo -e "If you encounter any issue or want a feature to be added please open an issue on the GitHub page."
 	echo -e "https://github.com/bradeythedev/cowfetch"
 	echo -e ""
+}
+
+Palette()
+{
+	echo -e "-- Colour Palette --"
+	printf "${TXTCOL} TXTCOL ${WORDCOL} WORDCOL   ${NAMECOL} NAMECOL             ${BUBBLECOL} BUBBLECOL     ${SEPCOL} SEPCOL    ${COWCOL} COWCOL ${CLS}\n"
+	printf "${TXTCOL} Info   ${WORDCOL} Info type ${NAMECOL} Username & hostname ${BUBBLECOL} Speech bubble ${SEPCOL} Separator ${COWCOL} moo    ${CLS}\n"
+	printf "\n"
 }
 
 Debug()
@@ -357,7 +366,7 @@ while getopts ":hsicpd" option; do
     	c) # Print available colours
         	DO_COLOURS=0;;
 		p) # Print current palette
-			DO_PALLETTE=1;;
+			DO_PALETTE=1;;
 		d) # Debugging
 			DO_DEBUG=1;;
     	?) # Unknown command
@@ -401,6 +410,11 @@ if (( DO_BUBBLE == 1 ))
 
 	# End
 	End
+fi
+
+# Show palette if applicable
+if (( DO_PALETTE == 1 ))
+then Palette
 fi
 
 # ^__^
