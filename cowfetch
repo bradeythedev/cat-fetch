@@ -51,8 +51,12 @@ SPACE="$USED_SPACE/$TOTAL_SPACE"
 GPU=$(glxinfo | grep "Device")
 TERMINAL=$(TERM_PID=$(ps -p $$ -o args,ppid | grep -o "[0-9]" | tr -d "\n"); ps -p ${TERM_PID} -o args | tr -d "\n")
 
+# Flag variables
+DO_BUBBLE=1
 DO_SOFTWARE=1
 DO_HARDWARE=1
+DO_COLOURS=1
+DO_PALLETTE=0
 DO_DEBUG=0
 
 Help()
@@ -64,21 +68,13 @@ Help()
 	echo -e "-h	Show the help, license and about menus"
 	echo -e "-s	Don't print software info"
 	echo -e "-i	Don't print hardware info"
-	echo -e "-c	Show the available colours"
+	echo -e "-c	Don't print the available colours"
 	echo -e "-d	Debugging mode"
 	echo -e ""
 	echo -e "----- Licenses -----"
 	echo -e "This program is licensed under the GPLv3 license."
 	echo -e "If you encounter any issue or want a feature to be added please open an issue on the GitHub page."
 	echo -e "https://github.com/bradeythedev/cowfetch"
-	echo -e ""
-}
-
-Palette()
-{
-    echo -e "${CLS}--- Colour Palette ---"
-	echo -e "${RED} ${SYMBOL} ${YELLOW} ${SYMBOL} ${GREEN} ${SYMBOL} ${CYAN} ${SYMBOL} ${BLUE} ${SYMBOL} ${PURPLE} ${SYMBOL} ${WHITE} ${SYMBOL} ${BLACK} ${SYMBOL} ${CLS}"
-	echo -e "${B_RED} ${SYMBOL} ${B_YELLOW} ${SYMBOL} ${B_GREEN} ${SYMBOL} ${B_CYAN} ${SYMBOL} ${B_BLUE} ${SYMBOL} ${B_PURPLE} ${SYMBOL} ${B_WHITE} ${SYMBOL} ${GRAY} ${SYMBOL} ${CLS}"
 	echo -e ""
 }
 
@@ -179,6 +175,11 @@ FindBubbleWidth()
 
 	if (( USE_LENGTH > BUBBLEWIDTH ))
 	then BUBBLEWIDTH=$USE_LENGTH
+	fi
+
+	# Decide if colour section is the longest line
+	if (( 24 > BUBBLEWIDTH ))
+	then BUBBLEWIDTH=24
 	fi
 }
 
@@ -286,6 +287,23 @@ Hardware()
 	SpaceUntilRightSide
 }
 
+# Print the available colours
+Colours()
+{
+    # Third separator
+	BUBBLEWIDTH=$(($BUBBLEWIDTH+5))
+	Separator
+	
+	# Available colours
+	printf "${BUBBLECOL} | ${RED} ${SYMBOL} ${YELLOW} ${SYMBOL} ${GREEN} ${SYMBOL} ${CYAN} ${SYMBOL} ${BLUE} ${SYMBOL} ${PURPLE} ${SYMBOL} ${WHITE} ${SYMBOL} ${BLACK} ${SYMBOL} ${CLS}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-24 ))
+	SpaceUntilRightSide
+	printf "${BUBBLECOL} | ${B_RED} ${SYMBOL} ${B_YELLOW} ${SYMBOL} ${B_GREEN} ${SYMBOL} ${B_CYAN} ${SYMBOL} ${B_BLUE} ${SYMBOL} ${B_PURPLE} ${SYMBOL} ${B_WHITE} ${SYMBOL} ${GRAY} ${SYMBOL} ${CLS}"
+	RIGHT_LENGTH=$(( BUBBLEWIDTH-24 ))
+	SpaceUntilRightSide
+	BUBBLEWIDTH=$(($BUBBLEWIDTH-5))
+}
+
 # Bottom of bubble
 BottomOfBubble()
 {
@@ -315,20 +333,22 @@ End()
 ### MAIN SEQUENCE ###
 
 # Flags
-while getopts ":hsicd" option; do
+while getopts ":hsicpd" option; do
 	case $option in
     	h) # Get help message
 			printf "${CLS}"
-			Help;;
+			Help
+			DO_BUBBLE=0;;
     	s) # Don't print software info
 	 		DO_SOFTWARE=0
 			printf "${CLS}";;
     	i) # Don't print hardware info
         	DO_HARDWARE=0
 			printf "${CLS}";;
-    	c) # Print colour palette
-        	Palette
-			printf "${CLS}";;
+    	c) # Print available colours
+        	DO_COLOURS=0;;
+		p) # Print current palette
+			DO_PALLETTE=1;;
 		d) # Debugging
 			DO_DEBUG=1;;
     	?) # Unknown command
@@ -343,27 +363,36 @@ if (( DO_DEBUG == 1 ))
 then Debug
 fi
 
-# Top of bubble
-TopOfBubble
+# Draw bubble and cow unless help is to be printed
+if (( DO_BUBBLE == 1 ))
+	then
+	# Top of bubble
+	TopOfBubble
 
-# Print software info if applicable
-if (( DO_SOFTWARE == 1 ))
-then Software
+	# Print software info if applicable
+	if (( DO_SOFTWARE == 1 ))
+	then Software
+	fi
+
+	# Print hardware if applicable
+	if (( DO_HARDWARE == 1 ))
+	then Hardware
+	fi
+
+	# Print available colours if applicable
+	if (( DO_COLOURS == 1 ))
+	then Colours
+	fi
+
+	# Bottom of bubble
+	BottomOfBubble
+
+	# moo
+	moo
+
+	# End
+	End
 fi
-
-# Print hardware if applicable
-if (( DO_HARDWARE == 1 ))
-then Hardware
-fi
-
-# Bottom of bubble
-BottomOfBubble
-
-# moo
-moo
-
-# End
-End
 
 # ^__^
 # (oo)\_______
