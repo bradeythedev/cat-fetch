@@ -34,6 +34,23 @@ To uninstall the program open a terminal and type the following
 sudo make uninstall
 ```
 
+## Notes
+Uses some GNU core utils and xprop to work.
+
+This program is licensed under the GPLv3 license.
+
+If you encounter any issue or want a feature to be added please open an issue on this GitHub page (and on https://github.com/JhonnyRice/cat-fetch to contribute to something useful)
+
+## TODO
+- [ ] **Fix GPU fetching**
+- [ ] Cowfetchposix
+- [ ] DE
+- [ ] Terminal
+- [ ] Theme
+- [ ] Icons
+- [ ] Config file for fancy colours (sick)
+- [ ] Config file for configurable cow (sick**er**)
+
 ## Contributors
 [Me](https://github.com/bradeythedev/) Owner of this fork
 
@@ -50,19 +67,3 @@ Guy who made cowsay (I'll find a link eventually)
 [Kazoku](https://github.com/K4zoku) Perfected the wm detection scipt, adding wayland support and making it way shorter
 
 [Alberto Salvia Novella](es20490446e.wordpress.com) Created the original Xorg WM detection script
-
-## Notes
-Uses some GNU core utils and xprop to work.
-
-This program is licensed under the GPLv3 license.
-
-If you encounter any issue or want a feature to be added please open an issue on this GitHub page (and on https://github.com/JhonnyRice/cat-fetch to contribute to something useful)
-
-## TODO
-- [ ] Cowfetchposix
-- [ ] DE
-- [ ] Terminal
-- [ ] Theme
-- [ ] Icons
-- [ ] Config file for fancy colours (sick)
-- [ ] Config file for configurable cow (sick**er**)
