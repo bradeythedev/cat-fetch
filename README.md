@@ -8,7 +8,7 @@ Fetch program written in shell, forked from [Cat-fetch-reborn](https://github.co
 
 ## Screenshots
 
-![Cowfetch on Linux Mint](https://github.com/bradeythedev/cowfetch/CowfetchDemo1.png)
+![Cowfetch on Linux Mint](https://github.com/bradeythedev/cowfetch/blob/51c0fd4284ab6b5bf87612c266d0e2feb4c4466d/CowfetchDemo1.png)
 
 ## Usage
 Flags and options (more to come, but only these for now)
