@@ -9,6 +9,7 @@ Fetch program written in shell, forked from [Cat-fetch-reborn](https://github.co
 ![Cowfetch on Linux Mint](https://github.com/bradeythedev/cowfetch/blob/8dc99ff455271fcc6821019eef4368d4b63afc9d/Screenshot1.png)
 
 ## Install
+##### Please note: cowfetchposix DOES NOT WORK. It will in future (eventually) but please don't try and use it yet. Sorry
 ### Latest release
 ##### (recommended)
 Select the releases tab on the side and follow the instructions for the latest release.
