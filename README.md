@@ -1,7 +1,5 @@
 # Cowfetch
-Fetch program written in shell, forked from [Cat-fetch-reborn](https://github.com/jhonnyrice/cat-fetch) by [JhonnyRice](https://github.com/jhonnyrice), and using the cow from cowsay.
-
-## Features
+Fetch program written in shell, forked from [Cat-fetch-reborn](https://github.com/jhonnyrice/cat-fetch) by [JhonnyRice](https://github.com/jhonnyrice), and using the cow from cowsay. Cowfetch includes:
 * All the info of neofetch
 * Good WM detection (but not by me bc I suck lol)
 * moo
@@ -9,6 +7,27 @@ Fetch program written in shell, forked from [Cat-fetch-reborn](https://github.co
 ## Screenshots
 
 ![Cowfetch on Linux Mint](https://github.com/bradeythedev/cowfetch/blob/8dc99ff455271fcc6821019eef4368d4b63afc9d/Screenshot1.png)
+
+## Install
+##### Please note: cowfetchposix DOES NOT WORK. It will in future (eventually) but please don't try and use it yet. Sorry
+### Latest release
+##### (recommended)
+Select the releases tab on the side and follow the instructions for the latest release.
+
+Alternatively, you can enter the "Releases" folder, then enter the folder of the latest release and manually download "cowfetch", "Makefile" and, if applicable, "cowfetchposix". Then open a terminal in the containing folder of the latter once downloaded, and type ```sudo make install```.
+
+Congratulations! Cowfetch is now installed and you can brag about it to all your friends.
+
+### Latest commit
+##### (recommended for Arch users who always need the bleeding edge)
+```
+git clone https://github.com/bradeythedev/cowfetch
+cd cowfetch
+sudo make install
+```
+Congratulations Arch Linux user! The latest and breakiest version of Cowfetch is installed on your system, and you have a whole new way of showing your friends "i use arch btw"
+
+<sub>I would also like to acknowledge *contributors* who need to write and test the latest version, but using Arch users as an example is just funnier lol. Thanks for contributing.</sub>
 
 ## Usage
 Flags and options (more to come, but only these for now)
@@ -18,14 +37,6 @@ Flags and options (more to come, but only these for now)
 -i  Don't print hardware info
 -c  Show the available colours
 -d  Debugging mode
-```
-
-## Install
-To install cowfetch, open a terminal and type the following (make sure you have the ability to use sudo)
-```
-git clone https://github.com/bradeythedev/cowfetch
-cd cowfetch
-sudo make install
 ```
 
 ## Uninstall
