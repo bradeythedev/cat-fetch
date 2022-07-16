@@ -31,7 +31,7 @@ Flags and options
 -s  Don't print software info
 -i  Don't print hardware info
 -c  Show the available colours
--d  Debugging mode
+-d  Debugging info
 ```
 
 ## Uninstall
