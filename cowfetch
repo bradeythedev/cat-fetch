@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# COLOR VARIABLES
+# COLOUR VARIABLES
 RED="\x1b[31m"
 YELLOW="\x1b[33m"
 GREEN="\x1b[32m"
@@ -68,7 +68,7 @@ Help()
 	echo -e "-----   Info   -----"
 	echo -e "Bradeythedev's Cowfetch is a fork of JhonnyRice's Cat-fetch-reborn."
 	echo -e "Rather than a cat, Cowfetch uses a cow to \"speak\" the output, as seen in Cowsay."
-	echo -e "Cowfetch was ultimately created as a method use Neofetch with Cowsay, and has grown to look completely different."
+	echo -e "Cowfetch was ultimately created as a method to use Neofetch with Cowsay, and has grown to look rather different."
 	echo -e "The cow is a clone of the cow in Cowsay, however the speech bubble, info layout, and colourscheme are unique."
 	echo -e "Cowfetch is free and open source, as said in the license."
 	echo -e "I hope you have fun using Cowfetch because I (mostly) had fun making it!"
